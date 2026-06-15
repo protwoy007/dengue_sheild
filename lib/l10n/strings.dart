@@ -1,0 +1,58 @@
+class S {
+  final bool bn;
+  const S(this.bn);
+
+  String t(String en, String b) => bn ? b : en;
+
+  String get appName       => t("DengueShield BD", "ডেঙ্গুশিল্ড বিডি");
+  String get tagline       => t("Predict. Protect. Prevent.", "পূর্বাভাস। সুরক্ষা। প্রতিরোধ।");
+  String get navHome       => t("Home", "হোম");
+  String get navMap        => t("Map", "মানচিত্র");
+  String get navSymptoms   => t("Symptoms", "উপসর্গ");
+  String get navAlerts     => t("Alerts", "সতর্কতা");
+  String get highRisk      => t("HIGH RISK", "উচ্চ ঝুঁকি");
+  String get mediumRisk    => t("MEDIUM RISK", "মাঝারি ঝুঁকি");
+  String get lowRisk       => t("LOW RISK", "কম ঝুঁকি");
+  String get riskScore     => t("Risk Score", "ঝুঁকি স্কোর");
+  String get yourArea      => t("Your Area", "আপনার এলাকা");
+  String get temperature   => t("Temp", "তাপমাত্রা");
+  String get humidity      => t("Humidity", "আর্দ্রতা");
+  String get rainfall      => t("Rainfall", "বৃষ্টিপাত");
+  String get todayWeather  => t("Today's Weather", "আজকের আবহাওয়া");
+  String get whyRisk       => t("Why this risk?", "কেন এই ঝুঁকি?");
+  String get allDistricts  => t("All Divisions", "সকল বিভাগ");
+  String get riskMap       => t("Dengue Risk Map", "ডেঙ্গু ঝুঁকির মানচিত্র");
+  String get tapDistrict   => t("Tap a zone to see details", "বিস্তারিত দেখতে এলাকায় ট্যাপ করুন");
+  String get checkSymptoms => t("Check Your Symptoms", "আপনার উপসর্গ পরীক্ষা করুন");
+  String get sympIntro     => t("Answer 7 quick questions to assess your dengue risk.", "ডেঙ্গু ঝুঁকি মূল্যায়ন করতে ৭টি প্রশ্নের উত্তর দিন।");
+  String get disclaimer    => t("This is not a diagnostic tool. Always consult a doctor.", "এটি রোগ নির্ণয়ের সরঞ্জাম নয়। সর্বদা ডাক্তারের পরামর্শ নিন।");
+  String get yes           => t("Yes", "হ্যাঁ");
+  String get no            => t("No", "না");
+  String get next          => t("Next", "পরবর্তী");
+  String get back          => t("Back", "পূর্ববর্তী");
+  String get seeResult     => t("See Result", "ফলাফল দেখুন");
+  String get result        => t("Your Result", "আপনার ফলাফল");
+  String get retake        => t("Retake", "আবার নিন");
+  String get seekCare      => t("Please seek medical care immediately.", "অনুগ্রহ করে এখনই চিকিৎসা নিন।");
+  String get consultDoc    => t("Consult a doctor within 24 hours.", "২৪ ঘণ্টার মধ্যে ডাক্তারের পরামর্শ নিন।");
+  String get stayAlert     => t("Monitor your health. Stay hydrated.", "স্বাস্থ্য পর্যবেক্ষণ করুন। পানি পান করুন।");
+  String get recentAlerts  => t("Recent Alerts", "সাম্প্রতিক সতর্কতা");
+  String get alertsSubtitle => t("Active outbreak warnings across Bangladesh", "বাংলাদেশ জুড়ে সক্রিয় প্রাদুর্ভাব সতর্কতা");
+  String get casesWeek     => t("cases this week", "এই সপ্তাহে কেস");
+  String get daysAgo       => t("days ago", "দিন আগে");
+  String get hoursAgo      => t("hours ago", "ঘণ্টা আগে");
+  String get language      => t("Language", "ভাষা");
+  String get division      => t("Division", "বিভাগ");
+  String get details       => t("Details", "বিস্তারিত");
+  String get close         => t("Close", "বন্ধ");
+  String get legend        => t("Risk Legend", "ঝুঁকির মাত্রা");
+  String get outbreakWarning => t("Outbreak Warning", "প্রাদুর্ভাব সতর্কতা");
+  String get preventionTip => t("Prevention Tips", "প্রতিরোধ টিপস");
+  String get tip1 => t("Remove standing water around your home", "বাড়ির আশেপাশে জমে থাকা পানি সরিয়ে ফেলুন");
+  String get tip2 => t("Use mosquito repellent and wear full sleeves", "মশা প্রতিরোধক ব্যবহার করুন ও পূর্ণ হাতা পড়ুন");
+  String get tip3 => t("Sleep under a mosquito net", "মশারির নিচে ঘুমান");
+  String get tip4 => t("Seek care early if fever develops", "জ্বর হলে দ্রুত চিকিৎসা নিন");
+  String get refresh       => t("Refresh", "রিফ্রেশ");
+  String get lastUpdated   => t("Last updated", "সর্বশেষ আপডেট");
+  String get justNow       => t("Just now", "এইমাত্র");
+}
