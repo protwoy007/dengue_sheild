@@ -24,7 +24,7 @@ class S {
   String get riskMap       => t("Dengue Risk Map", "ডেঙ্গু ঝুঁকির মানচিত্র");
   String get tapDistrict   => t("Tap a zone to see details", "বিস্তারিত দেখতে এলাকায় ট্যাপ করুন");
   String get checkSymptoms => t("Check Your Symptoms", "আপনার উপসর্গ পরীক্ষা করুন");
-  String get sympIntro     => t("Answer 7 quick questions to assess your dengue risk.", "ডেঙ্গু ঝুঁকি মূল্যায়ন করতে ৭টি প্রশ্নের উত্তর দিন।");
+  String get sympIntro     => t("Answer a few quick questions to check your symptoms.", "আপনার উপসর্গ যাচাই করতে কয়েকটি প্রশ্নের উত্তর দিন।");
   String get disclaimer    => t("This is not a diagnostic tool. Always consult a doctor.", "এটি রোগ নির্ণয়ের সরঞ্জাম নয়। সর্বদা ডাক্তারের পরামর্শ নিন।");
   String get yes           => t("Yes", "হ্যাঁ");
   String get no            => t("No", "না");
@@ -52,6 +52,7 @@ class S {
   String get tip2 => t("Use mosquito repellent and wear full sleeves", "মশা প্রতিরোধক ব্যবহার করুন ও পূর্ণ হাতা পড়ুন");
   String get tip3 => t("Sleep under a mosquito net", "মশারির নিচে ঘুমান");
   String get tip4 => t("Seek care early if fever develops", "জ্বর হলে দ্রুত চিকিৎসা নিন");
+  String get tip5 => t("Aedes bites in the daytime — protect yourself in the morning and late afternoon", "এডিস মশা দিনে কামড়ায় — সকাল ও বিকালে নিজেকে সুরক্ষিত রাখুন");
   String get refresh       => t("Refresh", "রিফ্রেশ");
   String get lastUpdated   => t("Last updated", "সর্বশেষ আপডেট");
   String get justNow       => t("Just now", "এইমাত্র");

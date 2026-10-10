@@ -31,14 +31,14 @@ class AboutScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text("DengueShield BD",
-              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.navy)),
+              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.ink)),
             Text(bn ? "পূর্বাভাস। সুরক্ষা। প্রতিরোধ।" : "Predict. Protect. Prevent.",
               style: GoogleFonts.poppins(fontSize: 13, color: AppColors.slate)),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(color: AppColors.tealLight, borderRadius: BorderRadius.circular(20)),
-              child: Text("v1.0.0 · 2026",
+              child: Text("v1.2.0 · 2026",
                 style: GoogleFonts.poppins(fontSize: 11, color: AppColors.teal, fontWeight: FontWeight.w600)),
             ),
           ])),
@@ -48,31 +48,34 @@ class AboutScreen extends StatelessWidget {
           _SectionTitle(bn ? "এই অ্যাপ কী করে?" : "What does this app do?"),
           _Card(child: _Para(
             bn
-              ? "DengueShield BD বাংলাদেশে ডেঙ্গু জ্বরের প্রাদুর্ভাব আসার ৭-১৪ দিন আগে পূর্বাভাস দেয়। আবহাওয়া ডেটা, হাসপাতালের কেস রিপোর্ট এবং ভৌগোলিক তথ্য মিলিয়ে একটি AI মডেল প্রতিটি উপজেলার জন্য ঝুঁকির স্কোর তৈরি করে।"
-              : "DengueShield BD predicts dengue fever outbreaks in Bangladesh 7–14 days in advance. By combining weather data, hospital case reports, and geographic information, an AI model generates a daily risk score for each upazila across Bangladesh.",
+              ? "DengueShield BD বাংলাদেশের ডেঙ্গু ঝুঁকি সম্পর্কে সচেতনতা বাড়ায়। রিয়েল-টাইম আবহাওয়া (গত ও আগামী ৭ দিনের বৃষ্টিপাত সহ) ও কেসের তথ্য মিলিয়ে প্রতিটি জেলার জন্য ০–১০০ ঝুঁকি সূচক দেখায়, কাছের হাসপাতাল খুঁজে দেয় এবং উপসর্গ যাচাই করতে সাহায্য করে।"
+              : "DengueShield BD raises awareness of dengue risk across Bangladesh. It combines live weather (including rainfall for the past and coming 7 days) with case data into a 0–100 risk index per district, helps you find nearby hospitals, and guides a symptom check.",
           )),
 
           const SizedBox(height: 8),
 
-          _SectionTitle(bn ? "AI মডেল" : "AI Model"),
+          _SectionTitle(bn ? "ঝুঁকি সূচক কীভাবে কাজ করে" : "How the risk index works"),
           _Card(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _InfoRow(Icons.auto_graph, bn ? "মডেল টাইপ" : "Model Type", "XGBoost + LSTM Ensemble"),
-            _InfoRow(Icons.dataset_outlined, bn ? "ট্রেনিং ডেটা" : "Training Data", "DGHS 2010–2023 + BMD Weather"),
-            _InfoRow(Icons.input_outlined, bn ? "ইনপুট ফিচার" : "Input Features",
-              bn ? "বৃষ্টিপাত, তাপমাত্রা, আর্দ্রতা, কেস ট্রেন্ড" : "Rainfall, Temperature, Humidity, Case trend"),
+            _InfoRow(Icons.rule, bn ? "পদ্ধতি" : "Method",
+              bn ? "নিয়ম-ভিত্তিক ওজনযুক্ত সূচক (মেশিন লার্নিং নয়)" : "Rule-based weighted index (not machine learning)"),
+            _InfoRow(Icons.input_outlined, bn ? "ইনপুট" : "Inputs",
+              bn ? "৭ দিনের বৃষ্টিপাত (৩৫), আর্দ্রতা (২৫), রিপোর্টকৃত কেস (২৫), তাপমাত্রার উপযোগিতা (১৫)"
+                 : "7-day rainfall (35), humidity (25), reported cases (25), temperature suitability (15)"),
             _InfoRow(Icons.output_outlined, bn ? "আউটপুট" : "Output",
-              bn ? "প্রতি উপজেলায় ০-১০০ ঝুঁকি স্কোর" : "Risk score 0–100 per upazila"),
-            _InfoRow(Icons.insights, bn ? "ব্যাখ্যাযোগ্যতা" : "Explainability", "SHAP (SHapley Additive exPlanations)"),
-            _InfoRow(Icons.track_changes, bn ? "নির্ভুলতা লক্ষ্য" : "Accuracy Target",
-              bn ? "উচ্চ ঝুঁকি জোনে ≥৮০% নির্ভুলতা" : "≥80% precision for High-risk zones"),
+              bn ? "প্রতি জেলায় ০-১০০ স্কোর: ≥৬০ উচ্চ, ৩০–৫৯ মাঝারি" : "0–100 score per district: ≥60 high, 30–59 medium, <30 low"),
+            _InfoRow(Icons.insights, bn ? "ব্যাখ্যা" : "Explainability",
+              bn ? "হোম স্ক্রিনে প্রতিটি উপাদানের অবদান দেখানো হয়" : "The Home screen shows each factor's contribution"),
+            _InfoRow(Icons.science_outlined, bn ? "সীমাবদ্ধতা" : "Limitations",
+              bn ? "ক্লিনিক্যালি যাচাই করা হয়নি; জেলাভিত্তিক কেসের সংখ্যা বর্তমানে নমুনা ডেটা" : "Not clinically validated; district-level case counts are currently sample data"),
           ])),
 
           const SizedBox(height: 8),
 
           _SectionTitle(bn ? "ডেটা সোর্স" : "Data Sources"),
           _Card(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _InfoRow(Icons.cloud_outlined, bn ? "আবহাওয়া" : "Weather", "Open-Meteo API (Free, No Key)"),
-            _InfoRow(Icons.medical_information_outlined, bn ? "ডেঙ্গু কেস" : "Dengue Cases", "DGHS Bangladesh (dghs.gov.bd)"),
+            _InfoRow(Icons.cloud_outlined, bn ? "আবহাওয়া" : "Weather", "Open-Meteo API (free, no key)"),
+            _InfoRow(Icons.medical_information_outlined, bn ? "ডেঙ্গু কেস" : "Dengue Cases",
+              bn ? "জাতীয় সংখ্যা: DGHS/IEDCR থেকে স্বয়ংক্রিয় পাঠ (ব্যর্থ হলে নমুনা)" : "National figures: auto-read from DGHS / IEDCR (sample if unavailable)"),
             _InfoRow(Icons.biotech_outlined, bn ? "রোগতত্ত্ব" : "Epidemiology", "IEDCR Bangladesh (iedcr.gov.bd)"),
             _InfoRow(Icons.map_outlined, bn ? "মানচিত্র" : "Map", "OpenStreetMap (Free)"),
             _InfoRow(Icons.location_on_outlined, bn ? "লোকেশন" : "Location", "Device GPS (Optional)"),
@@ -84,10 +87,10 @@ class AboutScreen extends StatelessWidget {
           _Card(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             _EthicsItem(Icons.privacy_tip_outlined, bn ? "কোনো ব্যক্তিগত তথ্য সংগ্রহ করা হয় না" : "No personal data collected (PII-free)"),
             _EthicsItem(Icons.gpp_good_outlined, bn ? "এটি রোগ নির্ণয়ের সরঞ্জাম নয়" : "Not a diagnostic tool — risk awareness only"),
-            _EthicsItem(Icons.visibility_outlined, bn ? "SHAP দিয়ে প্রতিটি পূর্বাভাস ব্যাখ্যা করা হয়" : "Every prediction explained via SHAP"),
-            _EthicsItem(Icons.manage_accounts_outlined, bn ? "DGHS কর্মকর্তারা যেকোনো সতর্কতা বাতিল করতে পারেন" : "DGHS officials can override any alert"),
+            _EthicsItem(Icons.visibility_outlined, bn ? "প্রতিটি স্কোরের কারণ দেখানো হয়" : "Every score shows the factors behind it"),
+            _EthicsItem(Icons.manage_accounts_outlined, bn ? "অফিসিয়াল ঘোষণার জন্য DGHS/IEDCR-কে অনুসরণ করুন" : "For official announcements, follow DGHS / IEDCR"),
             _EthicsItem(Icons.language_outlined, bn ? "বাংলা ভাষায় সম্পূর্ণ সমর্থন" : "Full Bengali language support"),
-            _EthicsItem(Icons.wifi_off_outlined, bn ? "অফলাইন মোড — ২জি নেটওয়ার্কে কাজ করে" : "Offline mode — works on 2G networks"),
+            _EthicsItem(Icons.wifi_off_outlined, bn ? "অফলাইনে সর্বশেষ সংরক্ষিত ডেটা দেখা যায়" : "Works offline using the last saved data"),
           ])),
 
           const SizedBox(height: 8),
@@ -123,13 +126,13 @@ class AboutScreen extends StatelessWidget {
               border: Border.all(color: AppColors.gold.withOpacity(0.3)),
             ),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Icon(Icons.info_outline, color: AppColors.gold, size: 18),
+              Icon(Icons.info_outline, color: AppColors.gold, size: 18),
               const SizedBox(width: 10),
               Expanded(child: Text(
                 bn
                   ? "এই অ্যাপটি শুধুমাত্র ঝুঁকি সচেতনতার জন্য। এটি কোনো চিকিৎসা নির্ণয়ের সরঞ্জাম নয়। সর্বদা একজন যোগ্য ডাক্তারের পরামর্শ নিন।"
                   : "This app is for risk awareness only. It is not a medical diagnostic tool. Always consult a qualified doctor for medical advice.",
-                style: GoogleFonts.poppins(fontSize: 12, color: AppColors.navy),
+                style: GoogleFonts.poppins(fontSize: 12, color: AppColors.ink),
               )),
             ]),
           ),
@@ -151,7 +154,7 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 6, left: 2),
-    child: Text(text, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.navy)),
+    child: Text(text, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
   );
 }
 
@@ -164,8 +167,8 @@ class _Card extends StatelessWidget {
     margin: const EdgeInsets.only(bottom: 4),
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: Colors.white, borderRadius: BorderRadius.circular(14),
-      border: Border.all(color: const Color(0xFFECEFF1), width: 0.8),
+      color: AppColors.cardBg, borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: AppColors.border, width: 0.8),
     ),
     child: child,
   );
@@ -191,7 +194,7 @@ class _InfoRow extends StatelessWidget {
       const SizedBox(width: 10),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label, style: GoogleFonts.poppins(fontSize: 11, color: AppColors.slate)),
-        Text(value, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.navy)),
+        Text(value, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.ink)),
       ])),
     ]),
   );
@@ -223,10 +226,10 @@ class _ContactRow extends StatelessWidget {
       Text(emoji, style: const TextStyle(fontSize: 20)),
       const SizedBox(width: 12),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.navy)),
+        Text(label, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.ink)),
         Text(value, style: GoogleFonts.poppins(fontSize: 12, color: AppColors.teal)),
       ])),
-      const Icon(Icons.chevron_right, color: AppColors.slate, size: 18),
+      Icon(Icons.chevron_right, color: AppColors.slate, size: 18),
     ]),
   );
 }

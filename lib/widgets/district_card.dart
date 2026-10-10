@@ -26,7 +26,7 @@ class DistrictCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(d.name(bn),
-                  style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.navy)),
+                  style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.ink)),
                 const SizedBox(height: 2),
                 Text(d.division(bn),
                   style: GoogleFonts.poppins(fontSize: 12, color: AppColors.slate)),

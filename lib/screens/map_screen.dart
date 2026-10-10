@@ -7,6 +7,8 @@ import "../providers/app_provider.dart";
 import "../theme/app_theme.dart";
 import "../models/district.dart";
 import "../widgets/risk_badge.dart";
+import "../data/hospitals_data.dart";
+import "hospital_screen.dart";
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -16,6 +18,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   District? _selected;
+  bool _showHospitals = false;
   final _mapController = MapController();
 
   Color _riskColor(RiskLevel l) => switch (l) {
@@ -23,6 +26,18 @@ class _MapScreenState extends State<MapScreen> {
     RiskLevel.medium => AppColors.warning,
     RiskLevel.low    => AppColors.success,
   };
+
+  /// Dark map: turns the light OpenStreetMap tiles into a muted dark look.
+  static Widget _darkTiles(BuildContext context, Widget tile, TileImage image) =>
+      ColorFiltered(
+        colorFilter: const ColorFilter.matrix(<double>[
+          -0.17, -0.57, -0.06, 0, 215,
+          -0.17, -0.57, -0.06, 0, 215,
+          -0.17, -0.57, -0.06, 0, 215,
+          0, 0, 0, 1, 0,
+        ]),
+        child: tile,
+      );
 
   void _select(District d) {
     setState(() => _selected = d);
@@ -41,9 +56,15 @@ class _MapScreenState extends State<MapScreen> {
           const Text("🦟"), const SizedBox(width: 8), Text(s.riskMap),
         ]),
         actions: [
+          IconButton(
+            tooltip: p.isBengali ? "হাসপাতাল দেখান" : "Show hospitals",
+            icon: Icon(Icons.local_hospital,
+              color: _showHospitals ? AppColors.gold : Colors.white70),
+            onPressed: () => setState(() => _showHospitals = !_showHospitals),
+          ),
           if (userLoc != null)
             IconButton(
-              icon: const Icon(Icons.my_location, color: AppColors.gold),
+              icon: Icon(Icons.my_location, color: AppColors.gold),
               onPressed: () => _mapController.move(
                 LatLng(userLoc.lat, userLoc.lng), 12.0),
             ),
@@ -76,6 +97,7 @@ class _MapScreenState extends State<MapScreen> {
             TileLayer(
               urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
               userAgentPackageName: "com.dengueshield.app",
+              tileBuilder: AppColors.dark ? _darkTiles : null,
             ),
 
             // Risk circles
@@ -90,6 +112,22 @@ class _MapScreenState extends State<MapScreen> {
                 borderStrokeWidth: 1.5,
               );
             }).toList()),
+
+            // Hospital markers (toggle in the app bar)
+            if (_showHospitals)
+              MarkerLayer(markers: allHospitals.map((h) => Marker(
+                point: LatLng(h.lat, h.lng),
+                width: 26, height: 26,
+                child: Tooltip(
+                  message: p.isBengali ? h.nameBn : h.nameEn,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white, shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.danger, width: 1.5)),
+                    child: Icon(Icons.add, size: 16, color: AppColors.danger),
+                  ),
+                ),
+              )).toList()),
 
             // District markers
             MarkerLayer(markers: p.districts.map((d) {
@@ -146,12 +184,12 @@ class _MapScreenState extends State<MapScreen> {
         Positioned(top: 12, left: 12, child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.94),
+            color: AppColors.cardBg.withOpacity(0.94),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFECEFF1)),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(s.legend, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.navy)),
+            Text(s.legend, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.ink)),
             const SizedBox(height: 6),
             ...[
               [RiskLevel.high,   s.highRisk],
@@ -194,7 +232,11 @@ class _MapScreenState extends State<MapScreen> {
           Positioned(bottom: 0, left: 0, right: 0,
             child: _DistrictDetail(
               d: _selected!, bn: p.isBengali, s: s,
-              onClose: () => setState(() => _selected = null))),
+              onClose: () => setState(() => _selected = null),
+              onHospitals: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => HospitalScreen(
+                  district: _selected!, bn: p.isBengali,
+                  userLat: userLoc?.lat, userLng: userLoc?.lng))))),
       ]),
     );
   }
@@ -205,7 +247,9 @@ class _DistrictDetail extends StatelessWidget {
   final bool bn;
   final dynamic s;
   final VoidCallback onClose;
-  const _DistrictDetail({required this.d, required this.bn, required this.s, required this.onClose});
+  final VoidCallback onHospitals;
+  const _DistrictDetail({required this.d, required this.bn, required this.s,
+    required this.onClose, required this.onHospitals});
 
   Color get riskColor => switch (d.riskLevel) {
     RiskLevel.high   => AppColors.danger,
@@ -219,7 +263,7 @@ class _DistrictDetail extends StatelessWidget {
       margin: const EdgeInsets.all(12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [const BoxShadow(color: Colors.black26, blurRadius: 20)],
       ),
@@ -227,7 +271,7 @@ class _DistrictDetail extends StatelessWidget {
         Row(children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(d.name(bn),
-              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.navy)),
+              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.ink)),
             Text(d.division(bn),
               style: GoogleFonts.poppins(fontSize: 12, color: AppColors.slate)),
           ]),
@@ -239,8 +283,8 @@ class _DistrictDetail extends StatelessWidget {
           const SizedBox(width: 8),
           GestureDetector(onTap: onClose,
             child: Container(padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(color: AppColors.lightGray, shape: BoxShape.circle),
-              child: const Icon(Icons.close, size: 18, color: AppColors.slate))),
+              decoration: BoxDecoration(color: AppColors.lightGray, shape: BoxShape.circle),
+              child: Icon(Icons.close, size: 18, color: AppColors.slate))),
         ]),
         const SizedBox(height: 14),
         Row(children: [
@@ -248,18 +292,30 @@ class _DistrictDetail extends StatelessWidget {
           const SizedBox(width: 8),
           _StatBox("${d.temperature.toStringAsFixed(1)}°C", s.temperature, AppColors.teal),
           const SizedBox(width: 8),
-          _StatBox("${d.humidity.toInt()}%", s.humidity, AppColors.navy),
+          _StatBox("${d.humidity.toInt()}%", s.humidity, AppColors.ink),
           const SizedBox(width: 8),
-          _StatBox("${d.rainfall}mm", s.rainfall, const Color(0xFF1565C0)),
+          _StatBox("${d.rainfall.toStringAsFixed(1)}mm", s.rainfall, const Color(0xFF1565C0)),
         ]),
         const SizedBox(height: 10),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(color: AppColors.lightGray, borderRadius: BorderRadius.circular(10)),
-          child: Text("${d.casesThisWeek} ${s.casesWeek}",
-            style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.navy),
+          child: Text("${d.casesThisWeek} ${s.casesWeek} (${bn ? "নমুনা" : "sample"})",
+            style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.ink),
             textAlign: TextAlign.center),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: onHospitals,
+            icon: const Icon(Icons.local_hospital, size: 18),
+            label: Text(bn ? "কাছের হাসপাতাল দেখুন" : "View hospitals",
+              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600)),
+            style: OutlinedButton.styleFrom(foregroundColor: AppColors.teal,
+              side: BorderSide(color: AppColors.teal)),
+          ),
         ),
       ]),
     );

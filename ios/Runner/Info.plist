@@ -45,5 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>DengueShield BD uses your location to show dengue risk and hospitals near you.</string>
 </dict>
 </plist>

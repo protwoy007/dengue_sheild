@@ -32,7 +32,7 @@ class LiveBanner extends StatelessWidget {
           border: Border.all(color: AppColors.tealMid),
         ),
         child: Row(children: [
-          const SizedBox(width: 14, height: 14,
+          SizedBox(width: 14, height: 14,
             child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.teal)),
           const SizedBox(width: 10),
           Text(bn ? "লাইভ ডেটা লোড হচ্ছে..." : "Fetching live data...",
@@ -77,7 +77,7 @@ class _Row extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isLive ? AppColors.teal : AppColors.slate;
     final bg    = isLive ? AppColors.tealLight : AppColors.lightGray;
-    final border= isLive ? AppColors.tealMid : const Color(0xFFDDE1E7);
+    final border= isLive ? AppColors.tealMid : AppColors.border;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -99,7 +99,7 @@ class _Row extends StatelessWidget {
             child: Text("LIVE", style: GoogleFonts.poppins(fontSize: 9, color: Colors.white, fontWeight: FontWeight.w700)),
           )
         else ...[
-          const Icon(Icons.history, size: 12, color: AppColors.slate),
+          Icon(Icons.history, size: 12, color: AppColors.slate),
           const SizedBox(width: 4),
           Text(timeAgo, style: GoogleFonts.poppins(fontSize: 11, color: AppColors.slate)),
         ],

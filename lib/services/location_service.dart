@@ -6,7 +6,8 @@ class UserLocation {
   final double lat;
   final double lng;
   final District nearestDistrict;
-  const UserLocation({required this.lat, required this.lng, required this.nearestDistrict});
+  final double distanceKm; // distance to that district centre
+  const UserLocation({required this.lat, required this.lng, required this.nearestDistrict, this.distanceKm = 0});
 }
 
 class LocationService {
@@ -35,10 +36,14 @@ class LocationService {
         if (dist < minDist) { minDist = dist; nearest = d; }
       }
 
+      // Far outside Bangladesh -> treat as "unknown" so the user picks an area manually.
+      if (nearest == null || minDist > 300000) return null;
+
       return UserLocation(
         lat: pos.latitude,
         lng: pos.longitude,
-        nearestDistrict: nearest!,
+        nearestDistrict: nearest,
+        distanceKm: minDist / 1000,
       );
     } catch (_) {
       return null;

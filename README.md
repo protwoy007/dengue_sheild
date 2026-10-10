@@ -1,5 +1,8 @@
 # dengueshield_bd
 
+> **v1.2.0** — see [CHANGELOG.md](CHANGELOG.md). Run `flutter pub get` after pulling (new dependencies: `shared_preferences`, `timezone`).
+> The risk score is a transparent **rule-based awareness index**, not a trained ML model. District case counts are sample data until a live feed is connected.
+
 A new Flutter project.
 
 ## Getting Started

@@ -88,7 +88,7 @@ class HospitalScreen extends StatelessWidget {
                 border: Border.all(color: AppColors.danger.withOpacity(0.3)),
               ),
               child: Row(children: [
-                const Icon(Icons.emergency, color: AppColors.danger, size: 20),
+                Icon(Icons.emergency, color: AppColors.danger, size: 20),
                 const SizedBox(width: 10),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(bn ? "স্বাস্থ্য জরুরি হেল্পলাইন" : "Health Emergency Helpline",
@@ -114,7 +114,7 @@ class HospitalScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Row(children: [
-                  const Icon(Icons.sort, size: 14, color: AppColors.teal),
+                  Icon(Icons.sort, size: 14, color: AppColors.teal),
                   const SizedBox(width: 6),
                   Text(bn ? "দূরত্ব অনুযায়ী সাজানো হয়েছে" : "Sorted by distance from your location",
                     style: GoogleFonts.poppins(fontSize: 11, color: AppColors.teal)),
@@ -145,7 +145,7 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 8),
-    child: Text(text, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.navy)),
+    child: Text(text, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
   );
 }
 
@@ -162,8 +162,8 @@ class _HospitalCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white, borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFECEFF1), width: 0.8),
+        color: AppColors.cardBg, borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border, width: 0.8),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -179,7 +179,7 @@ class _HospitalCard extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(bn ? h.nameBn : h.nameEn,
-              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.navy)),
+              style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink)),
             Row(children: [
               Container(
                 margin: const EdgeInsets.only(top: 2),
@@ -199,7 +199,7 @@ class _HospitalCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                   decoration: BoxDecoration(color: AppColors.lightGray, borderRadius: BorderRadius.circular(4)),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.near_me, size: 9, color: AppColors.slate),
+                    Icon(Icons.near_me, size: 9, color: AppColors.slate),
                     const SizedBox(width: 2),
                     Text(distance, style: GoogleFonts.poppins(fontSize: 10, color: AppColors.slate)),
                   ]),
@@ -210,7 +210,7 @@ class _HospitalCard extends StatelessWidget {
         ]),
         const SizedBox(height: 8),
         Row(children: [
-          const Icon(Icons.location_on_outlined, size: 13, color: AppColors.slate),
+          Icon(Icons.location_on_outlined, size: 13, color: AppColors.slate),
           const SizedBox(width: 4),
           Expanded(child: Text(h.address,
             style: GoogleFonts.poppins(fontSize: 11, color: AppColors.slate))),
