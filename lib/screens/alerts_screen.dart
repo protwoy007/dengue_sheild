@@ -1,3 +1,4 @@
+import "../widgets/responsive.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -34,7 +35,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
     };
     final mine = p.myDistrict;
 
-    return Scaffold(
+    return ResponsiveScaffold(
       backgroundColor: AppColors.lightGray,
       appBar: AppBar(
         title: Row(children: [

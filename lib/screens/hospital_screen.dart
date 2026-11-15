@@ -1,3 +1,4 @@
+import "../widgets/responsive.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:url_launcher/url_launcher.dart";
@@ -52,7 +53,7 @@ class HospitalScreen extends StatelessWidget {
       ? "${district.nameBn} - হাসপাতাল"
       : "${district.nameEn} Hospitals";
 
-    return Scaffold(
+    return ResponsiveScaffold(
       backgroundColor: AppColors.lightGray,
       appBar: AppBar(
         title: Row(children: [

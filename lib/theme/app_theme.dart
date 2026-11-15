@@ -67,8 +67,7 @@ class AppTheme {
         titleTextStyle: GoogleFonts.poppins(
           fontSize: 17, fontWeight: FontWeight.w600, color: Colors.white),
       ),
-      cardTheme: CardTheme(
-        elevation: 0,
+        cardTheme: CardThemeData(        elevation: 0,
         color: AppColors.cardBg,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),

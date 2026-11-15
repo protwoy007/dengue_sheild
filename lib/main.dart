@@ -5,6 +5,7 @@ import "providers/app_provider.dart";
 import "theme/app_theme.dart";
 import "screens/splash_screen.dart";
 import "screens/main_shell.dart";
+import "widgets/responsive.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,7 @@ class _App extends StatelessWidget {
       theme: AppTheme.build(false),
       darkTheme: AppTheme.build(true),
       themeMode: mode,
+      scrollBehavior: const AppScrollBehavior(),
       builder: (context, child) => _ThemeSync(child: child ?? const SizedBox.shrink()),
       initialRoute: "/",
       routes: {

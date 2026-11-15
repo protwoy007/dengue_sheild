@@ -1,3 +1,4 @@
+import "../widgets/responsive.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:provider/provider.dart";
@@ -108,7 +109,7 @@ class _ReportCaseScreenState extends State<ReportCaseScreen> {
     final districts = [...p.districts]..sort((a, b) => a.nameEn.compareTo(b.nameEn));
     final hasGps = p.userLocation != null;
 
-    return Scaffold(
+    return ResponsiveScaffold(
       backgroundColor: AppColors.lightGray,
       appBar: AppBar(
         backgroundColor: AppColors.navy,
@@ -323,7 +324,7 @@ class ReportsListScreen extends StatelessWidget {
     final bn = p.isBengali;
     final reports = p.reports;
 
-    return Scaffold(
+    return ResponsiveScaffold(
       backgroundColor: AppColors.lightGray,
       appBar: AppBar(
         backgroundColor: AppColors.navy,

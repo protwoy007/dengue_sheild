@@ -1,3 +1,4 @@
+import "../widgets/responsive.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -79,7 +80,7 @@ class LearnScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bn = context.watch<AppProvider>().isBengali;
 
-    return Scaffold(
+    return ResponsiveScaffold(
       backgroundColor: AppColors.lightGray,
       appBar: AppBar(
         backgroundColor: AppColors.navy,

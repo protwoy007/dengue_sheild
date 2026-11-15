@@ -12,6 +12,7 @@ import "../l10n/strings.dart";
 import "../widgets/district_card.dart";
 import "../widgets/live_banner.dart";
 import "../widgets/area_picker.dart";
+import "../widgets/responsive.dart";
 import "about_screen.dart";
 import "settings_screen.dart";
 import "report_screen.dart";
@@ -61,134 +62,253 @@ class _HomeScreenState extends State<HomeScreen> {
     final focus = p.focusDistrict;
     final isMine = p.myDistrict != null;
     final visible = _visibleDistricts(p);
+    final hasSidebar = Responsive.isTablet(context); // shell shows side nav
 
     return Scaffold(
       backgroundColor: AppColors.lightGray,
-      body: RefreshIndicator(
-        color: AppColors.teal,
-        onRefresh: p.refresh,
-        child: CustomScrollView(slivers: [
-          SliverAppBar(
-            pinned: true,
-            backgroundColor: AppColors.navy,
-            title: Row(children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Image.asset("assets/app_icon.png", width: 30, height: 30, fit: BoxFit.contain),
-              ),
-              const SizedBox(width: 8),
-              Expanded(child: Text(s.appName,
-                style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.w700, color: Colors.white))),
+      body: LayoutBuilder(builder: (context, box) {
+        final avail = box.maxWidth;
+        final wide = avail >= 760;     // centred, roomier layout
+        final twoCol = avail >= 900;   // dashboard: two columns
+        final maxW = twoCol ? 1180.0 : (wide ? 720.0 : double.infinity);
+        final side = wide ? Responsive.sidePad(avail, maxW) : 0.0;
+        final cols = avail >= 1240 ? 3 : 2;
+
+        final areaBanner = _AreaBanner(p: p);
+        final hero = _HeroCard(
+          district: focus, bn: bn, s: s, isMine: isMine,
+          onHospital: () => _openHospitals(context, p, focus));
+        final quick = _QuickActions(
+          bn: bn,
+          onSymptoms: () => p.setTab(2),
+          onHospitals: () => _openHospitals(context, p, focus),
+          onReport: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const ReportCaseScreen())),
+          onCall: () => _call("16263"));
+        final live = LiveBanner(
+          weatherLive: p.weatherLive,
+          dgshLive: p.dengueData?.isLive ?? false,
+          weatherTimeAgo: p.weatherTimeAgo,
+          dgshTimeAgo: p.dgshTimeAgo,
+          isLoading: p.isLoadingWeather,
+          bn: bn,
+        );
+        final national = p.dengueData != null
+            ? _NationalCard(data: p.dengueData!, bn: bn) : const SizedBox.shrink();
+        final weather = _WeatherStrip(district: focus, bn: bn, s: s);
+        final outlook = _OutlookCard(district: focus, bn: bn);
+        final factors = _FactorsCard(district: focus, bn: bn, s: s);
+        final trend = _TrendCard(values: p.trendFor(focus.id), districtName: focus.name(bn), bn: bn);
+        final learn = _LearnTile(bn: bn);
+        final tips = _TipsCard(s: s);
+
+        final Widget top;
+        if (twoCol) {
+          top = Column(children: [
+            _WebHeader(districts: p.districts, bn: bn),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(flex: 11, child: Column(children: [
+                areaBanner, hero, quick, const SizedBox(height: 4),
+                live, national, weather,
+              ])),
+              Expanded(flex: 10, child: Column(children: [
+                const SizedBox(height: 4),
+                outlook, factors, trend, learn, tips,
+              ])),
             ]),
-            actions: [
-              GestureDetector(
-                onTap: p.toggleLanguage,
-                child: Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.gold.withOpacity(0.6)),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(bn ? "EN" : "বাং",
-                    style: GoogleFonts.poppins(fontSize: 13, color: AppColors.gold, fontWeight: FontWeight.w600)),
-                ),
-              ),
-              IconButton(
-                tooltip: bn ? "সেটিংস" : "Settings",
-                icon: const Icon(Icons.settings_outlined, color: Colors.white),
-                onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const SettingsScreen())),
-              ),
-              IconButton(
-                icon: const Icon(Icons.info_outline, color: Colors.white),
-                onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => AboutScreen(bn: bn))),
-              ),
-            ],
+          ]);
+        } else {
+          top = Column(children: [
+            areaBanner, hero, quick, const SizedBox(height: 4),
+            live, national, weather, outlook, factors, trend, learn, tips,
+          ]);
+        }
+
+        final listHeader = Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+            child: Row(children: [
+              Expanded(child: Text(s.allDistricts,
+                style: GoogleFonts.poppins(fontSize: wide ? 17 : 15, fontWeight: FontWeight.w600, color: AppColors.ink))),
+              _SortChip(label: bn ? "ঝুঁকি" : "Risk", selected: _sort == 0, onTap: () => setState(() => _sort = 0)),
+              const SizedBox(width: 6),
+              _SortChip(label: "A–Z", selected: _sort == 1, onTap: () => setState(() => _sort = 1)),
+            ]),
           ),
-
-          SliverToBoxAdapter(child: Column(children: [
-            _AreaBanner(p: p),
-            _HeroCard(
-              district: focus, bn: bn, s: s, isMine: isMine,
-              onHospital: () => _openHospitals(context, p, focus)),
-            _QuickActions(
-              bn: bn,
-              onSymptoms: () => p.setTab(2),
-              onHospitals: () => _openHospitals(context, p, focus),
-              onReport: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const ReportCaseScreen())),
-              onCall: () => _call("16263")),
-            const SizedBox(height: 4),
-            LiveBanner(
-              weatherLive: p.weatherLive,
-              dgshLive: p.dengueData?.isLive ?? false,
-              weatherTimeAgo: p.weatherTimeAgo,
-              dgshTimeAgo: p.dgshTimeAgo,
-              isLoading: p.isLoadingWeather,
-              bn: bn,
-            ),
-            if (p.dengueData != null) _NationalCard(data: p.dengueData!, bn: bn),
-            _WeatherStrip(district: focus, bn: bn, s: s),
-            _OutlookCard(district: focus, bn: bn),
-            _FactorsCard(district: focus, bn: bn, s: s),
-            _TrendCard(values: p.trendFor(focus.id), districtName: focus.name(bn), bn: bn),
-            _LearnTile(bn: bn),
-            _TipsCard(s: s),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-              child: Row(children: [
-                Expanded(child: Text(s.allDistricts,
-                  style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.ink))),
-                _SortChip(label: bn ? "ঝুঁকি" : "Risk", selected: _sort == 0, onTap: () => setState(() => _sort = 0)),
-                const SizedBox(width: 6),
-                _SortChip(label: "A–Z", selected: _sort == 1, onTap: () => setState(() => _sort = 1)),
-              ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
-              child: TextField(
-                onChanged: (v) => setState(() => _query = v),
-                style: GoogleFonts.poppins(fontSize: 13),
-                decoration: InputDecoration(
-                  hintText: bn ? "জেলা বা বিভাগ খুঁজুন…" : "Search district or division…",
-                  hintStyle: GoogleFonts.poppins(fontSize: 13, color: AppColors.slate),
-                  prefixIcon: Icon(Icons.search, size: 20, color: AppColors.slate),
-                  filled: true, fillColor: AppColors.cardBg,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.border)),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.border)),
-                ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+            child: TextField(
+              onChanged: (v) => setState(() => _query = v),
+              style: GoogleFonts.poppins(fontSize: 13),
+              decoration: InputDecoration(
+                hintText: bn ? "জেলা বা বিভাগ খুঁজুন…" : "Search district or division…",
+                hintStyle: GoogleFonts.poppins(fontSize: 13, color: AppColors.slate),
+                prefixIcon: Icon(Icons.search, size: 20, color: AppColors.slate),
+                filled: true, fillColor: AppColors.cardBg,
+                contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.border)),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.border)),
               ),
             ),
-          ])),
+          ),
+        ]);
 
-          if (visible.isEmpty)
+        return RefreshIndicator(
+          color: AppColors.teal,
+          onRefresh: p.refresh,
+          child: CustomScrollView(slivers: [
+            SliverAppBar(
+              pinned: true,
+              backgroundColor: AppColors.navy,
+              automaticallyImplyLeading: false,
+              title: Row(children: [
+                if (!hasSidebar) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.asset("assets/app_icon.png", width: 30, height: 30, fit: BoxFit.contain),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                Expanded(child: Text(hasSidebar ? (bn ? "ড্যাশবোর্ড" : "Dashboard") : s.appName,
+                  style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.w700, color: Colors.white))),
+              ]),
+              actions: hasSidebar ? null : [
+                GestureDetector(
+                  onTap: p.toggleLanguage,
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.gold.withOpacity(0.6)),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(bn ? "EN" : "বাং",
+                      style: GoogleFonts.poppins(fontSize: 13, color: AppColors.gold, fontWeight: FontWeight.w600)),
+                  ),
+                ),
+                IconButton(
+                  tooltip: bn ? "সেটিংস" : "Settings",
+                  icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                  onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen())),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.info_outline, color: Colors.white),
+                  onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => AboutScreen(bn: bn))),
+                ),
+              ],
+            ),
+
             SliverToBoxAdapter(child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Center(child: Text(bn ? "কিছু পাওয়া যায়নি" : "No districts match your search",
-                style: GoogleFonts.poppins(fontSize: 13, color: AppColors.slate))),
-            ))
-          else
-            SliverList(delegate: SliverChildBuilderDelegate(
-              (_, i) {
-                if (i == visible.length) return const SizedBox(height: 20);
-                return DistrictCard(
-                  d: visible[i], bn: bn,
-                  onTap: () => _openHospitals(context, p, visible[i]));
-              },
-              childCount: visible.length + 1,
+              padding: EdgeInsets.symmetric(horizontal: side),
+              child: Column(children: [top, listHeader]),
             )),
-        ]),
-      ),
+
+            if (visible.isEmpty)
+              SliverToBoxAdapter(child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Center(child: Text(bn ? "কিছু পাওয়া যায়নি" : "No districts match your search",
+                  style: GoogleFonts.poppins(fontSize: 13, color: AppColors.slate))),
+              ))
+            else if (twoCol)
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(side + 8, 0, side + 8, 28),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: cols, mainAxisExtent: 116),
+                  delegate: SliverChildBuilderDelegate(
+                    (_, i) => DistrictCard(
+                      d: visible[i], bn: bn,
+                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                      onTap: () => _openHospitals(context, p, visible[i])),
+                    childCount: visible.length,
+                  ),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: side),
+                sliver: SliverList(delegate: SliverChildBuilderDelegate(
+                  (_, i) {
+                    if (i == visible.length) return const SizedBox(height: 20);
+                    return DistrictCard(
+                      d: visible[i], bn: bn,
+                      onTap: () => _openHospitals(context, p, visible[i]));
+                  },
+                  childCount: visible.length + 1,
+                )),
+              ),
+          ]),
+        );
+      }),
     );
   }
+}
+
+// ───────────────────────── web dashboard header ─────────────────────────
+class _WebHeader extends StatelessWidget {
+  final List<District> districts;
+  final bool bn;
+  const _WebHeader({required this.districts, required this.bn});
+
+  @override
+  Widget build(BuildContext context) {
+    int c(RiskLevel l) => districts.where((d) => d.riskLevel == l).length;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 18, 16, 6),
+      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft, end: Alignment.bottomRight,
+          colors: [Color(0xFF0A1628), Color(0xFF0F4C5C)]),
+        boxShadow: [BoxShadow(
+          color: const Color(0xFF0A1628).withOpacity(0.25),
+          blurRadius: 24, offset: const Offset(0, 10))],
+      ),
+      child: Row(children: [
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(bn ? "বাংলাদেশে ডেঙ্গু ঝুঁকি" : "Dengue risk across Bangladesh",
+            style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white)),
+          const SizedBox(height: 6),
+          Text(bn ? "আবহাওয়া ও কেস-ভিত্তিক আগাম সতর্কতা · জানুন. রক্ষা করুন. প্রতিরোধ করুন."
+                  : "Weather + case based early warning · Predict. Protect. Prevent.",
+            style: GoogleFonts.poppins(fontSize: 13, color: Colors.white70)),
+        ])),
+        const SizedBox(width: 20),
+        _Pill("${c(RiskLevel.high)}", bn ? "উচ্চ" : "High", const Color(0xFFFF6B6B)),
+        const SizedBox(width: 10),
+        _Pill("${c(RiskLevel.medium)}", bn ? "মাঝারি" : "Medium", const Color(0xFFFFD54F)),
+        const SizedBox(width: 10),
+        _Pill("${c(RiskLevel.low)}", bn ? "কম" : "Low", const Color(0xFF69DB7C)),
+      ]),
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  final String value, label;
+  final Color color;
+  const _Pill(this.value, this.label, this.color);
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 92,
+    padding: const EdgeInsets.symmetric(vertical: 12),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: Colors.white.withOpacity(0.12)),
+    ),
+    child: Column(children: [
+      Text(value, style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w700, color: color)),
+      Text(label, style: GoogleFonts.poppins(fontSize: 11, color: Colors.white70)),
+    ]),
+  );
 }
 
 // ───────────────────────── area banner ─────────────────────────
@@ -273,7 +393,10 @@ class _HeroCard extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: bgColor, borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft, end: Alignment.bottomRight,
+          colors: [bgColor, Color.lerp(bgColor, Colors.black, 0.28)!]),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [BoxShadow(color: bgColor.withOpacity(0.35), blurRadius: 16, offset: const Offset(0, 6))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

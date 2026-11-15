@@ -1,3 +1,4 @@
+import "../widgets/responsive.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -78,7 +79,7 @@ class _SymptomScreenState extends State<SymptomScreen> {
     final bn = p.isBengali;
     final total = _questions.length;
 
-    return Scaffold(
+    return ResponsiveScaffold(
       backgroundColor: AppColors.lightGray,
       appBar: AppBar(
         title: Row(children: [

@@ -4,18 +4,42 @@ import "../models/district.dart";
 import "../theme/app_theme.dart";
 import "risk_badge.dart";
 
-class DistrictCard extends StatelessWidget {
+class DistrictCard extends StatefulWidget {
   final District d;
   final bool bn;
   final VoidCallback? onTap;
-  const DistrictCard({super.key, required this.d, required this.bn, this.onTap});
+  final EdgeInsets margin;
+  const DistrictCard({super.key, required this.d, required this.bn, this.onTap,
+    this.margin = const EdgeInsets.symmetric(horizontal: 16, vertical: 5)});
+
+  @override
+  State<DistrictCard> createState() => _DistrictCardState();
+}
+
+class _DistrictCardState extends State<DistrictCard> {
+  bool _hover = false;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+    final d = widget.d;
+    final bn = widget.bn;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      margin: widget.margin,
+      transform: Matrix4.translationValues(0, _hover ? -2 : 0, 0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: _hover
+          ? [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 14, offset: const Offset(0, 6))]
+          : const [],
+      ),
+      child: Card(
+      margin: EdgeInsets.zero,
       child: InkWell(
-        onTap: onTap,
+        onTap: widget.onTap,
         borderRadius: BorderRadius.circular(14),
         child: Padding(
           padding: const EdgeInsets.all(14),
@@ -53,6 +77,8 @@ class DistrictCard extends StatelessWidget {
           ]),
         ),
       ),
+    ),
+    ),
     );
   }
 }

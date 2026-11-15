@@ -1,3 +1,4 @@
+import "../widgets/responsive.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -15,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
     final p = context.watch<AppProvider>();
     final bn = p.isBengali;
 
-    return Scaffold(
+    return ResponsiveScaffold(
       backgroundColor: AppColors.lightGray,
       appBar: AppBar(
         backgroundColor: AppColors.navy,
