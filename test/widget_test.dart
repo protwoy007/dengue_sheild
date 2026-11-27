@@ -1,30 +1,29 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:dengueshield_bd/main.dart';
+import 'package:dengueshield_bd/services/dengue_scraper.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('fallback dengue data is marked as sample data', () {
+    expect(DengueData.fallback.isSample, isTrue);
+    expect(DengueData.fallback.isLive, isFalse);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('cached dengue data preserves reported values', () {
+    const data = DengueData(
+      totalCasesThisYear: 1200,
+      totalDeathsThisYear: 8,
+      casesThisWeek: 45,
+      source: 'DGHS',
+      isLive: true,
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    final cached = DengueData.fromCache(data.toJson());
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(cached.totalCasesThisYear, 1200);
+    expect(cached.totalDeathsThisYear, 8);
+    expect(cached.casesThisWeek, 45);
+    expect(cached.source, 'DGHS');
+    expect(cached.isLive, isFalse);
+    expect(cached.isSample, isFalse);
   });
 }
